@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Text Encryption</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a1128; /* Dark Navy Blue */
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: #1c2541; /* Light Navy Blue */
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+        select, textarea, input {
+            background: #f8f8f8;
+            color: black;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.3s ease-in-out;
+        }
+        select:focus, textarea:focus, input:focus {
+            border-color: #0099ff;
+            box-shadow: 0 0 8px rgba(0, 153, 255, 0.7);
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary { background: #28a745; color: white; }
+        .btn-secondary { background: #007bff; color: white; }
+        .btn:hover { transform: scale(1.05); opacity: 0.9; }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eeeeee;
+            border-radius: 8px;
+            word-break: break-word;
+            color: black;
+        }
+        .error {
+            color: #ff4d4d;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function toggleFields() {
+            let action = document.getElementById("action").value;
+            let encryptLabel = document.getElementById("encrypt-label");
+            let encryptSection = document.getElementById("encrypt-section");
+            let decryptSection = document.getElementById("decrypt-section");
+
+            if (action === "encrypt") {
+                encryptLabel.innerText = "Encrypt Text 🔒";
+                encryptSection.style.display = "block";
+                decryptSection.style.display = "none";
+            } else {
+                encryptLabel.innerText = "Decrypt Text 🔓";
+                encryptSection.style.display = "none";
+                decryptSection.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2 id="encrypt-label">Secure Text Encryption & Decryption 🔒</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <label for="action">Choose Action:</label>
+        <select id="action" onchange="toggleFields()">
+            <option value="encrypt">Encrypt Text 🔒</option>
+            <option value="decrypt">Decrypt Text 🔓</option>
+        </select>
+
+        <!-- Encryption Section -->
+        <div id="encrypt-section">
+            <form action="/encrypt" method="post">
+                <textarea name="text" placeholder="Enter text to encrypt" required></textarea>
+                <input type="password" name="password" placeholder="Enter encryption key" required>
+                <button type="submit" class="btn btn-primary">Encrypt 🔒</button>
+            </form>
+        </div>
+
+        {% if encrypted_text %}
+            <div class="result">
+                <strong>Encrypted Text:</strong>
+                <p>{{ encrypted_text }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Decryption Section -->
+        <div id="decrypt-section" style="display: none;">
+            <form action="/decrypt" method="post">
+                <textarea name="encrypted_text" placeholder="Enter encrypted text" required></textarea>
+                <input type="password" name="password" placeholder="Enter decryption key" required>
+                <button type="submit" class="btn btn-secondary">Decrypt 🔓</button>
+            </form>
+        </div>
+
+        {% if decrypted_text %}
+            <div class="result">
+                <strong>Decrypted Text:</strong>
+                <p>{{ decrypted_text }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        toggleFields();
+    </script>
+</body>
+</html>
